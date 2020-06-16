@@ -1,11 +1,12 @@
 import sys
 import pygame
 from WindowClass import Window
-from tests import test
+from tests import fill_board
 
 
 pygame.init()
 pygame.display.set_caption("Game of life")
+clock = pygame.time.Clock()
 WIDTH = 800
 HEIGHT = 800
 SIZE = (WIDTH, HEIGHT)
@@ -13,7 +14,7 @@ screen = pygame.display.set_mode(SIZE)
 
 black = (0, 0, 0)
 white = (255, 255, 255)
-grey = (64, 64, 64)
+grey = (128, 128, 128)
 
 
 def draw_board(window):
@@ -31,17 +32,29 @@ def draw_board(window):
         y += a
         x = 0
 
-# TO DELETE FUNCTION
-def print_my_array(array):
-    for row in array:
+
+def count_alive_neighbours(neighbours):
+    alive = 0
+    for neighbour in neighbours:
+        if neighbour.state == 1:
+            alive += 1
+    return alive
+
+def update(window):
+    for row in window.window:
         for cell in row:
-            print(cell)
+            neighbours = cell.get_neighbours(window.window)
+            alive = count_alive_neighbours(neighbours)
+            if cell.state == 0 and alive == 3:
+                cell.state = 1
+            elif cell.state ==1 and alive in [2,3]:
+                pass
+            elif cell.state ==1:
+                cell.state = 0
 
 
 window = Window(WIDTH, HEIGHT)
-
-test(window)
-
+fill_board(window)
 
 running = True
 while running:
@@ -52,7 +65,8 @@ while running:
     screen.fill(grey)
     draw_board(window.window)
     pygame.display.update()
-
+    update(window)
+    clock.tick(0.5)
 
 pygame.quit()
 sys.exit()
