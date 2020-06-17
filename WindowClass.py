@@ -1,7 +1,7 @@
 # Create a Cell class that stores information about single cell: its coordinates and state( 1-alive, 0-dead)
 # Create a Window class that creates nested lists of cells. Window class functions:
 # create_cells() <- init func
-# change_state() <- changes state of cell
+# change_state() <- changes state of single cell
 
 
 class Cell:

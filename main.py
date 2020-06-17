@@ -3,7 +3,6 @@ import pygame
 from WindowClass import Window
 from tests import fill_board
 
-
 pygame.init()
 pygame.display.set_caption("Game of life")
 clock = pygame.time.Clock()
