@@ -5,7 +5,7 @@ def fill_board(window):
         window.change_state(i, i+1, 1)
         window.change_state(i+2, i-3, 1)
 
-    for i in range(59, 80):
+    for i in range(35, 48):
         window.change_state(i, 16, 1)
         window.change_state(i, 15, 1)
         for j in range(34, 37):
