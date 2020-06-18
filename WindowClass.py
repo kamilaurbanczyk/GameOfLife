@@ -30,6 +30,12 @@ class Cell:
 
         return neighbours
 
+    def change_state(self):
+        if self.state == 1:
+            self.state = 0
+        else:
+            self.state = 1
+
 
 class Window(Cell):
     def __init__(self, width, height):
@@ -47,9 +53,6 @@ class Window(Cell):
                 row.append(cell)
             array.append(row)
         return array
-
-    def change_state(self, column, row, new_state):
-        self.window[row][column].state = new_state
 
     def count_alive_neighbours(self, cell):
         alive = 0

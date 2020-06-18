@@ -1,7 +1,6 @@
 import sys
 import pygame
 from WindowClass import Window
-from tests import fill_board
 
 pygame.init()
 pygame.display.set_caption("Game of life")
@@ -23,8 +22,8 @@ def draw_board(window_object):
     columns = len(game_window[0])
     x = 0
     y = 0
-    for column in range(columns):
-        for row in range(rows):
+    for row in range(rows):
+        for column in range(columns):
             cell = game_window[row][column]
             if cell.state == 1:
                 pygame.draw.rect(screen, white, [x, y, side, side], 0)
@@ -35,12 +34,21 @@ def draw_board(window_object):
         x = 0
 
 
+def fill_board():
+    mousex, mousey = pygame.mouse.get_pos()
+    for row in window.window:
+        for cell in row:
+            if cell.x + 10 > mousex > cell.x and cell.y + 10 > mousey > cell.y:
+                cell.change_state()
+
+
 def count_alive_neighbours(neighbours):
     alive = 0
     for neighbour in neighbours:
         if neighbour.state == 1:
             alive += 1
     return alive
+
 
 def update(window):
     for row in window.window:
@@ -56,19 +64,26 @@ def update(window):
 
 
 window = Window(500, 500)
-fill_board(window)
 
+generation = 1
+draw = True
 running = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.MOUSEBUTTONDOWN and draw:
+            fill_board()
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            draw = False
 
     screen.fill(grey)
     draw_board(window)
     pygame.display.update()
-    update(window)
-    clock.tick(0.5)
+    if not draw:
+        update(window)
+        generation += 1
+        clock.tick(0.5)
 
 pygame.quit()
 sys.exit()
