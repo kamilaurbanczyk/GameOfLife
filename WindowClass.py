@@ -57,15 +57,14 @@ class Window(Cell):
     def count_alive_neighbours(self, cell):
         alive = 0
         for neighbour in cell.neighbours:
-            if self.window[int(neighbour[1]/10)][int(neighbour[0]/10)].state == 1:
+            if self.window[int(neighbour[1] / 10)][int(neighbour[0] / 10)].state == 1:
                 alive += 1
         return alive
 
-
-
-
-
-
-
-
-
+    def count_active_cells(self):
+        active_cells = 0
+        for row in self.window:
+            for cell in row:
+                if cell.state == 1:
+                    active_cells += 1
+        return active_cells

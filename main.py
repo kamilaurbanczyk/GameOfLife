@@ -3,7 +3,6 @@ import pygame
 from WindowClass import Window
 from interface import Button
 
-
 pygame.init()
 pygame.display.set_caption("Game of life")
 clock = pygame.time.Clock()
@@ -14,8 +13,8 @@ screen = pygame.display.set_mode(SIZE)
 
 black = (0, 0, 0)
 white = (255, 255, 255)
-grey = (128, 128, 128)
-lightgrey = (64, 64, 64)
+lightgrey = (128, 128, 128)
+grey = (64, 64, 64)
 
 
 def draw_board(window_object):
@@ -37,12 +36,24 @@ def draw_board(window_object):
         x = 0
 
 
-def fill_board():
-    mousex, mousey = pygame.mouse.get_pos()
+def fill_board(mousex, mousey):
     for row in window.window:
         for cell in row:
             if cell.x + 10 > mousex > cell.x and cell.y + 10 > mousey > cell.y:
                 cell.change_state()
+
+
+def start_game(mousex, mousey):
+    global draw, play
+    if 730 > mousex > 550 and 200 > mousey > 160:
+        draw = False
+        play = True
+
+
+def stop_game(mousex, mousey):
+    global play
+    if 730 > mousex > 550 and 250 > mousey > 210:
+        play = False
 
 
 def count_alive_neighbours(neighbours):
@@ -62,33 +73,47 @@ def update(window):
             alive = count_alive_neighbours(neighbours)
             if cell.state == 0 and alive == 3:
                 new_cell.state = 1
-            elif cell.state ==1 and alive in [2,3]:
+            elif cell.state == 1 and alive in [2, 3]:
                 new_cell.state = 1
-            elif cell.state ==1:
+            elif cell.state == 1:
                 new_cell.state = 0
     return new_window
 
 
 generation = 1
 window = Window(500, 500)
-button = Button(520, 50, lightgrey, 150, 40, 'Generation: ')
+gen_button = Button(510, 40, 180, 40)
+active_cells_button = Button(510, 100, 180, 40)
+start_button = Button(550, 160, 100, 40, True)
+stop_button = Button(550, 210, 100, 40, True)
 
 draw = True
+play = False
 running = True
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        if event.type == pygame.MOUSEBUTTONDOWN and draw:
-            fill_board()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mousex, mousey = pygame.mouse.get_pos()
+            if draw:
+                fill_board(mousex, mousey)
+                start_game(mousex, mousey)
+            else:
+                start_game(mousex, mousey)
+                stop_game(mousex, mousey)
         if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
             draw = False
 
-    screen.fill(grey)
+    screen.fill(lightgrey)
     draw_board(window)
-    button.draw(screen)
+    gen_button.draw(screen, 'Generation: {}'.format(generation))
+    active_cells_button.draw(screen, 'Active cells: {}'.format(window.count_active_cells()))
+    start_button.draw(screen, ' START')
+    stop_button.draw(screen, '  STOP')
     pygame.display.update()
-    if not draw:
+    if not draw and play:
         window = update(window)
         generation += 1
         clock.tick(0.5)
